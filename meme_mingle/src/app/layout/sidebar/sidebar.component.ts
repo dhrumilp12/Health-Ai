@@ -38,7 +38,7 @@ export class SidebarComponent implements OnInit {
     }
     // Fetch user profile picture
     this.fetchUserProfile();
-    this.fetchTotalScore();
+    
   }
 
   // Translate content to the target language
@@ -59,28 +59,6 @@ export class SidebarComponent implements OnInit {
     ];
     const allTextsToTranslate = [...textsToTranslate, ...additionalTexts];
 
-    this.appService
-      .translateTexts(allTextsToTranslate, targetLanguage)
-      .subscribe((response) => {
-        const translations = response.translations;
-
-        // Translate texts from data-translate elements
-        elementsToTranslate.forEach((element, index) => {
-          const originalText = textsToTranslate[index];
-          this.translatedTexts[originalText] = translations[index];
-
-          // Update directly if it's a regular DOM element
-          if (!(element.tagName.startsWith('MAT-'))) {
-            element.textContent = translations[index];
-          }
-        });
-
-        // Handle additional texts
-        additionalTexts.forEach((text, index) => {
-          const translatedText = translations[textsToTranslate.length + index];
-          this.translatedTexts[text] = translatedText;
-        });
-      });
   }
  // Toggles the sidebar visibility
  toggleSidebar(): void {
@@ -108,18 +86,6 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  fetchTotalScore(): void {
-    const userId = localStorage.getItem('user_id') || 'default_user';
-    
-      this.appService.getTotalScore(userId).subscribe({
-        next: (response: any) => {
-          this.totalScore = response.total_score;
-        },
-        error: (error: any) => {
-          console.error('Error fetching total score:', error);
-        },
-      });
-  }
 
   // Signs the user out
   signOut(): void {

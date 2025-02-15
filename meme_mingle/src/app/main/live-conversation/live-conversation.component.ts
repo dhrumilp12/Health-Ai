@@ -42,11 +42,11 @@ interface IWindow extends Window {
   webkitSpeechRecognition: any;
 }
 
-interface HistoricalFigure {
-  display: string;
-  value: string;
-  field: string;
-  imageUrl?: string; // Add the imageUrl property
+interface HealthSpecialty {
+  display: string;        // e.g., "General Practitioner"
+  value: string;          // e.g., "general_practitioner"
+  field: string;          // e.g., "Primary Care"
+  imageUrl?: string;      // path to relevant image
 }
 
 @Component({
@@ -143,18 +143,70 @@ export class LiveConversationComponent implements OnInit, OnDestroy {
   selectedRoleImageUrl: string = 'assets/img/banner.png';
   preferredLanguage: string = 'en';
   translatedTexts: { [key: string]: string } = {};
-  historicalFigures: HistoricalFigure[] = [
-    { imageUrl:'assets/roles/Ada_Lovelace.png', display: 'Ada Lovelace', value: 'Ada Lovelace', field: 'Computer Science' },
-    { imageUrl:'assets/roles/Albert_Einstein.jpg', display: 'Albert Einstein', value: 'Albert Einstein', field: 'Physics' },
-    { imageUrl:'assets/roles/Aryabhatta.jpg', display: 'Aryabhatta', value: 'Aryabhatta', field: 'mathematician' },
-    { imageUrl:'assets/roles/Galileo_Galilei.jpg',display: 'Galileo Galilei', value: 'Galileo Galilei', field: 'Astronomy' },
-    { imageUrl:'assets/roles/Isaac_Newton.png', display: 'Isaac Newton', value: 'Isaac Newton', field: 'Mathematics' },
-    { imageUrl:'assets/roles/Leonardo_da_Vinci.jpg',display: 'Leonardo da Vinci', value: 'Leonardo da Vinci', field: 'Art and Science' },
-    { imageUrl:'assets/roles/Marie_Curie.jpg',display: 'Marie Curie', value: 'Marie Curie', field: 'Chemistry' },
-    { imageUrl:'assets/roles/Nikola_Tesla.jpg',display: 'Nikola Tesla', value: 'Nikola Tesla', field: 'Electrical Engineering' },
-    { imageUrl:'assets/roles/Thomas_Edison.jpg',display: 'Thomas Edison', value: 'Thomas Edison', field: 'Inventing' },
-    // Add more figures as needed
+  healthSpecialties: HealthSpecialty[] = [
+    {
+      imageUrl: 'assets/roles/general_practitioner.jpg',
+      display: 'General Practitioner',
+      value: 'General Practitioner',
+      field: 'Primary Care'
+    },
+    {
+      imageUrl: 'assets/roles/nutrition.jpg',
+      display: 'Nutrition & Diet',
+      value: 'Nutrition & Diet',
+      field: 'Nutritional Advice'
+    },
+    {
+      imageUrl: 'assets/roles/mental-health.jpg',
+      display: 'Mental Health Support',
+      value: 'Mental Health Support',
+      field: 'Psychological Well-being'
+    },
+    {
+      imageUrl: 'assets/roles/fitness.jpg',
+      display: 'Fitness & Exercise',
+      value: 'Fitness & Exercise',
+      field: 'Physical Health'
+    },
+    {
+      imageUrl: 'assets/roles/dermatology.jpg',
+      display: 'Skin & Dermatology',
+      value: 'Skin & Dermatology',
+      field: 'Skin Health'
+    },
+    {
+      imageUrl: 'assets/roles/cardiology.jpg',
+      display: 'Heart Health (Cardiology)',
+      value: 'Heart Health',
+      field: 'Cardiology'
+    },
+    {
+      imageUrl: 'assets/roles/pediatrics.jpg',
+      display: 'Pediatric Care',
+      value: 'Pediatric Care',
+      field: 'Children’s Health'
+    },
+    {
+      imageUrl: 'assets/roles/geriatrics.jpg',
+      display: 'Geriatric Care',
+      value: 'Geriatric Care',
+      field: 'Elderly Health'
+    },
+    {
+      imageUrl: 'assets/roles/dentistry.jpg',
+      display: 'Dental Care',
+      value: 'Dental Care',
+      field: 'Oral Health'
+    },
+    {
+      imageUrl: 'assets/roles/obgyn.png',
+      display: 'OB/GYN',
+      value: 'OB/GYN',
+      field: 'Women’s Health'
+    }
+    // ... add as many as you need
   ];
+  
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   constructor(private appService: AppService, private chatService: ChatService,private sanitizer: DomSanitizer) {}
@@ -250,30 +302,7 @@ export class LiveConversationComponent implements OnInit, OnDestroy {
     'AI is speaking...',
     'AI is listening...',
   ];
-    const allTextsToTranslate = [...textsToTranslate, ...additionalTexts];
-
-    this.appService
-      .translateTexts(allTextsToTranslate, targetLanguage)
-      .subscribe((response) => {
-        const translations = response.translations;
-
-        // Translate texts from data-translate elements
-        elementsToTranslate.forEach((element, index) => {
-          const originalText = textsToTranslate[index];
-          this.translatedTexts[originalText] = translations[index];
-
-          // Update directly if it's a regular DOM element
-          if (!(element.tagName.startsWith('MAT-'))) {
-            element.textContent = translations[index];
-          }
-        });
-
-        // Handle additional texts
-        additionalTexts.forEach((text, index) => {
-          const translatedText = translations[textsToTranslate.length + index];
-          this.translatedTexts[text] = translatedText;
-        });
-      });
+    
   }
 
   finalizeChat(): void {
@@ -549,7 +578,7 @@ export class LiveConversationComponent implements OnInit, OnDestroy {
 
 
   updateSelectedRoleImage(event: any): void {
-    const selectedFigure = this.historicalFigures.find(figure => figure.value === event.value);
+    const selectedFigure = this.healthSpecialties.find(figure => figure.value === event.value);
     this.selectedRoleImageUrl = selectedFigure?.imageUrl || 'assets/img/banner.png';
   }
   

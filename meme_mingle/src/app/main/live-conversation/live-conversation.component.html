@@ -13,7 +13,7 @@
         <mat-form-field appearance="fill" class="role-select">
           <mat-label>{{ translatedTexts['Select Your Mentor'] || 'Select Your Mentor' }}</mat-label>
           <mat-select [(value)]="selectedRole" (selectionChange)="updateSelectedRoleImage($event)">
-            <mat-option *ngFor="let figure of historicalFigures" [value]="figure.value">
+            <mat-option *ngFor="let figure of healthSpecialties" [value]="figure.value">
               <img [src]="figure.imageUrl" alt="{{ figure.display }}'s portrait" class="figure-image" style="flex-shrink: 0; 
               width: 32px;
               height: 32px;

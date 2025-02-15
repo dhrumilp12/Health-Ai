@@ -95,57 +95,11 @@ export class AppService {
     return this.http.post(`${this.baseUrl}/ai_mentor/text-to-speech`, payload, { responseType: 'blob' });
   }
 
-  // for translating texts
-  translateTexts(texts: string[], targetLanguage: string) {
-    return this.http.post<any>(`${this.baseUrl}/translate`, {
-      texts,
-      target_language: targetLanguage,
-    });
-  }
 
-  // Fetch quiz questions based on topic or file
-  getQuizQuestions(userId: string, topic?: string, file?: File, numQuestions: number = 5, level?: string): Observable<any> {
-    const formData = new FormData();
-    if (topic) formData.append('topic', topic);
-    if (file) formData.append('file', file);
-    if (level) formData.append('level', level);
-    formData.append('num', numQuestions.toString());
-
-    return this.http.post(`${this.baseUrl}/ai/quiz/${userId}`, formData);
-  }
-
-  // Submit quiz answers
-  submitQuizAnswers(quizId: string, userId: string, answers: any[]): Observable<any> {
-    const payload = {
-      user_id: userId,
-      answers: answers,
-    };
-    return this.http.post(`${this.baseUrl}/ai/quiz/${quizId}/submit`, payload);
-  }
-
-  // Get total score
-  getTotalScore(userId: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/ai/user/${userId}/total_score`);
-  }
 
   // Optional: Method to check if user is authenticated
   isAuthenticated(): boolean {
     return !!localStorage.getItem('access_token');
-  }
-
-  // Create Group
-  createGroup(groupData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/groups/create`, groupData);
-  }
-
-  // Join an existing group
-  joinGroup(payload: { group_id: string; user_id: string }): Observable<any> {
-    return this.http.post(`${this.baseUrl}/groups/join`, payload);
-  } 
-
-  //get groups
-  getGroups(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/groups/retrieve`);
   }
 
   // Optional: Method to log out the user

@@ -1,10 +1,4 @@
-"""
-meme_mingle_agent.py
-Merged version that preserves old code (user mood, memory stubs, etc.)
-but uses initialize_agent(...) with AgentType.OPENAI_FUNCTIONS
-so that streaming is disabled and the 400 "Stream not yet supported" error is avoided.
-"""
-
+""" This module contains the HealthAIAgent class, which is a subclass of AIAgent."""
 import os
 import logging
 import json
@@ -43,7 +37,7 @@ from services.db.user import get_user_profile_by_user_id
 from utils.consts import SYSTEM_MESSAGE
 from utils.agents import fetch_meme  # or as needed
 
-class MemeMingleAIAgent(AIAgent):
+class HealthAIAgent(AIAgent):
     """
     A class that retains user mood logic, memory stubs, and advanced functionality,
     but uses OPENAI_FUNCTIONS to avoid streaming with tool calls.
@@ -372,7 +366,7 @@ class MemeMingleAIAgent(AIAgent):
 
             backend_base_url = os.getenv("BACKEND_BASE_URL", "http://localhost:8000")
             audio_url = f"{backend_base_url}/ai_mentor/download_audio/{filename}"
-            return audio_url, filename
+            return audio_url
         except Exception as e:
             logging.error(f"TTS conversion error: {e}")
             return "", ""
@@ -434,9 +428,6 @@ class MemeMingleAIAgent(AIAgent):
     # 8) get_initial_greeting
     # ---------------------------------------------------------------------
     def get_initial_greeting(self, user_id: str) -> dict:
-        """
-        Creates a new chat_id if needed, logs initial doc, returns greeting from the agent.
-        """
         db_client = MongoDBClient.get_client()
         db_name = MongoDBClient.get_db_name()
         db = db_client[db_name]
@@ -445,7 +436,24 @@ class MemeMingleAIAgent(AIAgent):
         chat_summary_collection = db["chat_summaries"]
         user_journey = user_journey_collection.find_one({"user_id": user_id})
 
-        # Get the last couple summaries
+        user_profile_json = get_user_profile_by_user_id(user_id)
+        if user_profile_json:
+            user_profile = json.loads(user_profile_json)
+        else:
+            user_profile = {}
+
+        print("user_profile", user_profile)
+        preferred_language = user_profile.get("preferredLanguage", "en")
+
+        # Add language enforcement instruction
+        language_instruction = (
+            f"\n\n**Language Enforcement:** Respond exclusively in {preferred_language} using the correct script. "
+            "Do not use any other language, even if the user writes in another language. "
+            "All responses must be in {preferred_language} without exception."
+        )
+        self.system_message.content += language_instruction
+
+        # (Existing logic)
         past_summaries_cursor = chat_summary_collection.find({"user_id": user_id}).sort("chat_id", -1)
         past_summaries = list(past_summaries_cursor)
         recent_summaries = past_summaries[:2]
@@ -453,7 +461,6 @@ class MemeMingleAIAgent(AIAgent):
         if summaries_text:
             self.system_message.content += f"\nPrevious Summaries:\n{summaries_text}"
 
-        # Create new chat_id
         now = datetime.now()
         chat_id = int(now.timestamp())
 
@@ -466,7 +473,6 @@ class MemeMingleAIAgent(AIAgent):
             "concerns_progress": []
         })
 
-        # If no user_journey doc, create it
         if not user_journey:
             user_journey_collection.insert_one({
                 "user_id": user_id,
@@ -477,17 +483,22 @@ class MemeMingleAIAgent(AIAgent):
                 "mental_health_concerns": []
             })
             introduction = """
-This is your first session with the student. Be polite and introduce yourself in a friendly and inviting manner.
+    This is your first session with the user. Be polite and introduce yourself in a warm, empathetic, and inviting manner.
 
-In this session, do your best to understand what the user hopes to achieve through your service. Ask questions to uncover the user's academic goals, subjects of interest, and preferred learning methods (visual, auditory, kinesthetic) to derive an educational approach that fits their needs.
+    In this session, aim to understand the user's health and wellness objectives. Ask open-ended questions to uncover any key concerns or goals—whether they pertain to nutrition, mental well-being, fitness, or other aspects of a healthy lifestyle.
 
-**Language Assurance:**
-- Confirm the user's preferred language at the beginning of the session.
-- Inform the user that you will respond ONLY in their preferred language. If the preferred language is Gujarati ("gu"), ensure all communications are in Gujarati.
-- If you encounter limitations in the preferred language, notify the user and offer to continue in English.
+    **Important Disclaimer:**
+    - You are here to provide general health and wellness advice, not to replace professional medical care. Encourage the user to seek a qualified healthcare provider for medical diagnosis and treatment where needed.
 
-Explain that you are here to provide personalized tutoring, mentorship, and career guidance to support their educational journey. Ensure the student feels welcomed, understood, and excited to embark on their learning experience with your assistance.
-"""
+    **Language Enforcement:**
+    - The user’s preferred language is {preferred_language}.
+    - You must respond exclusively in {preferred_language}, regardless of the user’s initial greeting language.
+    - For example, if the user’s profile says “zh” for Chinese, all messages should be in Chinese. If the user’s profile says “fr,” respond in French, etc.
+    - If you genuinely cannot continue in {preferred_language}, apologize in {preferred_language} and ask for clarification.
+
+
+    Explain that you are here to support their wellness journey by offering evidence-based tips, mental health encouragement, lifestyle recommendations, and motivational guidance. Ensure the user feels welcomed, understood, and optimistic about improving their overall well-being.
+    """
             self.system_message.content += introduction
 
         # Then run the first message with turn_id=0
@@ -503,5 +514,3 @@ Explain that you are here to provide personalized tutoring, mentorship, and care
             "message": response,
             "chat_id": chat_id
         }
-
-   

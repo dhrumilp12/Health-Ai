@@ -5,7 +5,7 @@ import logging
 from flask import jsonify, Blueprint, request, send_file, send_from_directory
 import json
 from services.speech_service import speech_to_text
-from agents.meme_mingle_agent import MemeMingleAIAgent
+from agents.Health_AI_Agent import HealthAIAgent
 from services.azure_mongodb import MongoDBClient
 import io
 from services.text_to_speech_service import text_to_speech
@@ -33,7 +33,7 @@ def get_mental_health_agent_welcome(user_id):
     
     desired_role = body.get("role", "MemeMingle")  # Default to 'educational mentor' if not specified
 
-    agent = MemeMingleAIAgent(
+    agent = HealthAIAgent(
         tool_names=[
             "gutendex_textbook_search",
             "generate_suggestions",
@@ -105,7 +105,7 @@ def run_mental_health_agent(user_id, chat_id):
     chat_summary = chat_summary_collection.find_one({"user_id": user_id, "chat_id": int(chat_id)})
     desired_role = chat_summary.get("desired_role", "educational mentor")
     print(f"Desired role: {desired_role}")
-    agent = MemeMingleAIAgent(
+    agent = HealthAIAgent(
         tool_names=[
             "gutendex_textbook_search",
             "generate_suggestions",
@@ -149,7 +149,7 @@ def run_mental_health_agent(user_id, chat_id):
 def set_mental_health_end_state(user_id, chat_id):
     try:
         logger.info(f"Finalizing chat {chat_id} for user {user_id}")
-        agent = MemeMingleAIAgent(tool_names=["gutendex_textbook_search","generate_suggestions","web_search_youtube","web_search_tavily","textbook_search","location_search_gplaces", "web_search_google", "user_profile_retrieval", "agent_facts"])
+        agent = HealthAIAgent(tool_names=["gutendex_textbook_search","generate_suggestions","web_search_youtube","web_search_tavily","textbook_search","location_search_gplaces", "web_search_google", "user_profile_retrieval", "agent_facts"])
 
         agent.perform_final_processes(user_id, chat_id)
 

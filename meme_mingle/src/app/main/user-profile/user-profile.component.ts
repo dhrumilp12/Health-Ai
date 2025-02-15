@@ -143,28 +143,6 @@ export class UserProfileComponent implements OnInit {
     ];
     const allTextsToTranslate = [...textsToTranslate, ...additionalTexts];
 
-    this.appService
-      .translateTexts(allTextsToTranslate, targetLanguage)
-      .subscribe((response) => {
-        const translations = response.translations;
-
-        // Translate texts from data-translate elements
-        elementsToTranslate.forEach((element, index) => {
-          const originalText = textsToTranslate[index];
-          this.translatedTexts[originalText] = translations[index];
-
-          // Update directly if it's a regular DOM element
-          if (!(element.tagName.startsWith('MAT-'))) {
-            element.textContent = translations[index];
-          }
-        });
-
-        // Handle additional texts
-        additionalTexts.forEach((text, index) => {
-          const translatedText = translations[textsToTranslate.length + index];
-          this.translatedTexts[text] = translatedText;
-        });
-      });
   }
   
   /**

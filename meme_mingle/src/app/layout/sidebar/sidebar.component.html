@@ -35,39 +35,6 @@
         <i class="bi bi-magic"></i> <!-- Updated to magic wand icon -->
         <span data-translate> Chat Wizard</span>
       </button>
-      <!-- AI Avatar -->
-      <button
-        class="menu-btn"
-        title="{{ translatedTexts['AI Avatar'] || 'AI Avatar' }}"
-        routerLink="/main/avatar"
-      >
-        <span role="img" aria-label="girl">👧</span>
-        <span data-translate>Buddy</span>
-      </button>
-
-      <!-- Quiz AI -->
-      <button
-        class="menu-btn"
-        title="{{ translatedTexts['Quiz AI'] || 'Quiz AI' }}"
-        routerLink="/main/quiz-ai"
-        routerLinkActive="active" 
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <span role="img" aria-label="question">❓</span> <!-- Updated to question mark emoji -->
-        <span data-translate>Quizify</span>
-        <span
-          class="score-badge"
-          title="Total Score"
-          *ngIf="totalScore !== null"
-          >{{ totalScore }}</span
-        >
-      </button>
-      <!-- My Groups -->
-      <button class="menu-btn" title="My Groups" routerLink="/main/study-group" routerLinkActive="active" 
-      [routerLinkActiveOptions]="{ exact: false }">
-        <i class="bi bi-people"></i>
-        <span data-translate>My Groups</span>
-      </button>
     </div>
   </div>
 
