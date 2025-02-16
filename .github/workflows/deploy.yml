@@ -3,7 +3,8 @@ name: Deploy Angular app to GitHub Pages
 on:
   push:
     branches:
-      - main  # or the default branch
+      - main 
+      - setup-github-pages # or the default branch
     paths:
       - 'Health_ai/**'  # Only trigger on frontend changes
 
