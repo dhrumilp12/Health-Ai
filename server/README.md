@@ -16,33 +16,33 @@ Before you begin, ensure you have the following installed on your machine:
 
 ## Project Setup
 
-1. **Clone the repository**:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/dhrumilp12/Health-Ai.git
+   cd Health-Ai
    ```
-   git clone https://github.com/dhrumilp12/.git
-   cd server
+2. Set up the virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate   # On Windows, use `venv\Scripts\activate`
    ```
+3. Install the required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set up environment variables for Azure Text Analytics, Giphy API, Adzuna API, and other necessary services.
 
-2. **Create and activate a virtual environment (optional but recommended)**:
-    ```
-    python -m venv venv
-    source venv/bin/activate  # On Windows use: .\venv\Scripts\Activate.ps1
-    ```
-
-3. **Configure environment variables**:
-   - Copy the `.env.example` file to a new file named `.env`.
-   - Update the `.env` file with your specific configurations.
+## Usage
+1. Start the server:
+   ```bash
+   flask run
    ```
-   cp .env.example .env
-   ```
-4.  **Install the required dependencies**:
-    ```
-    pip install -r requirements.txt
-    ```
-
-5. **Run app.py**
-   ```
-   python app.py
-   ```
+2. Use the provided endpoints to interact with the Health-Ai assistant:
+   - `/ai_mentor/welcome/<user_id>`: Initial greeting with role input.
+   - `/ai_mentor/<user_id>/<chat_id>`: Main conversation route.
+   - `/ai_mentor/finalize/<user_id>/<chat_id>`: Finalize the conversation.
+   - `/ai_mentor/voice-to-text`: Convert voice input to text.
+   - `/ai_mentor/text-to-speech`: Convert text to speech.
 
 ---
 ## Install FFmpeg and Add FFmpeg to System PATH
