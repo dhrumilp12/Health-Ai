@@ -17,7 +17,6 @@ Health-Ai is an intelligent virtual assistant designed to support users on their
 - **Progress Check-ins**: Regularly assesses the user’s improvements or challenges, offering motivation and adjusting health recommendations as needed.
 - **Mood Detection and Humor**: Assesses the user’s emotional state to tailor responses, adjusting humor style to match the detected mood.
 
-
 ## Technologies Used
 - **Python**: Core programming language.
 - **Flask**: Web framework for building the API.
@@ -29,7 +28,8 @@ Health-Ai is an intelligent virtual assistant designed to support users on their
 - **Giphy API**: For fetching memes.
 - **Adzuna API**: For fetching job listings.
 - **MongoDB**: Database for storing user data and chat summaries.
-  
+- **DeepSeek LLM**: For advanced language model capabilities.
+- **Embeddings**: For efficient text processing and similarity searches.
 
 ## Contribution Guidelines
 We welcome contributions to Health-Ai. To contribute:
